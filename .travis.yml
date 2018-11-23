@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t gehtmaguad/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run gehtmaguad/react-test npm test -- --coverage
+
+after_success:
+  # Build images
+  - docker build -t gehtmaguad/multi-client ./client
+  - docker build -t gehtmaguad/multi-nginx ./nginx
+  - build -t gehtmaguad/multi-server ./server
+  - build -t gehtmaguad/multi-worker ./worker
+  # Login to docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # push images
+  - docker push gehtmaguad/multi-client
+  - docker push gehtmaguad/multi-nginx
+  - docker push gehtmaguad/multi-server
+  - docker push gehtmaguad/multi-worker
