@@ -21,3 +21,15 @@ after_success:
   - docker push gehtmaguad/multi-nginx
   - docker push gehtmaguad/multi-server
   - docker push gehtmaguad/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-central-1
+  app: multi-docker
+  env: MultiDocker
+  bucket_name: elasticbeanstalk-eu-central-1-143100638017
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
